@@ -9,7 +9,7 @@ var webAppUrl = "https://script.google.com/macros/s/AKfycbxmh8YpoErySEhw-_AVqneG
 var orderRegexPass = /\/P-AREA: (.*)\n\nSALES: (.*)\n\nKONSUMEN: (\d+)\nNO HP: (\d+)\n\nMODEM: (\d+)\nKABEL: (\d+)\nLAIN LAIN: (\d+)\nKETERANGAN: (.+)/gmi;
 var orderRegex = /:\s{0,1}(.+)/ig;
 
-var errMsg = "Gunakan format Contoh.\
+var errMsg = "Use the format.\
 \n/pasang - untuk laporan pemasangan";
 
 function ngisi(datas) {
@@ -30,7 +30,7 @@ function orderParsing(update) {
   var match = str.match(orderRegex);
   
   if ( msg.chat.type == 'private' ) {
-    ret = '🚫 Jalankan di Group!';
+    ret = '🚫 Run in Group!';
   } else {
  
   
@@ -95,30 +95,12 @@ function doPost(e) {
       this.replyToSender("It works!");
     });
     bus.on(/^[\/!]ping/i, function () {
-      this.replyToSender("<b>Bot Is Working!</b>");
+      this.forwardToSender("<b>Bot Is Working!</b>");
     });
     bus.on(/^[\/!]pasang/i, function () {
       this.replyToSender("\n\/P-AREA: -\ \nSALES: -\ \nKONSUMEN: -\ \nNO HP: -\ \nMODEM: -\ \nKABEL: -\ \nLAIN LAIN: -\ \nKETERANGAN: -");
-      this.replyToSender("Silahkan di Copy");
-    });
-    bus.on(/^[\/!]gangguan/i, function () {
-      this.replyToSender("");
-    });
-    bus.on(/^[\/!]bukis/i, function () {
-      this.replyToSender("");
-    });
-    bus.on(/^[\/!]LOKASI/i, function () {
-      this.replyToSender("");
-    });
-    bus.on(/^[\/!]AREA/i, function () {
-          this.replyToSender("");
-      });
-      bus.on(/^[\/!]G/i, function () {
-          this.replyToSender("");
-      });
-      bus.on(/^[\/!]B/i, function () {
-          this.replyToSender("");
-      });
+      this.forwardToSender("Copy text");
+    }
     
     bus.on(orderRegex, function () {
       var rtext = orderParsing(update); 
@@ -186,6 +168,15 @@ Bot.prototype.replyToSender = function (text) {
     'chat_id': this.update.message.chat.id,
     'parse_mode' : 'HTML',
     'reply_to_message_id': this.update.message.message_id,
+    'text': text
+  });
+}
+
+Bot.prototype.forwardToSender = function (text) {
+  return this.request('sendMessage', {
+    'chat_id': this.update.message.chat.id,
+    'parse_mode' : 'HTML',
+    'forward_sender_name': this.update.message.message_id,
     'text': text
   });
 }
