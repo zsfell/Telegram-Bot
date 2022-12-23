@@ -1,16 +1,15 @@
 var scriptProperties = PropertiesService.getScriptProperties();
-var token = 'BOT TOKEN';
+var token = 'bot token';
 
-var ssid = "SHEET ID";
-var sheetName = "SHEET NAME";
+var ssid = "sheet id";
+var sheetName = "test";
 
-var webAppUrl = "https://script.google.com/macros/s/AKfycbxmh8YpoErySEhw-_AVqneGD5irTAitjMxN7jITBvLjRor3TevI0eG8_ttXntkSYgio/exec";
+var webAppUrl = "deployment app";
 
-var orderRegexPass = /\/P-AREA: (.*)\n\nSALES: (.*)\n\nKONSUMEN: (\d+)\nNO HP: (\d+)\n\nMODEM: (\d+)\nKABEL: (\d+)\nLAIN LAIN: (\d+)\nKETERANGAN: (.+)/gmi;
+var orderRegexPass = /\/T-AREA: (.*)\n\nPPoE: (\d+)\nNOMINAL: (\d+)\nKETERANGAN: (.+)/gmi;
 var orderRegex = /:\s{0,1}(.+)/ig;
 
-var errMsg = "Use the format.\
-\n/pasang - untuk laporan pemasangan";
+var errMsg = " ";
 
 function ngisi(datas) {
   var sheet = SpreadsheetApp.openById(ssid).getSheetByName(sheetName);
@@ -20,7 +19,6 @@ function ngisi(datas) {
 }
 
 function orderParsing(update) {
- // scriptProperties.setProperty('DATA_TEST', JSON.stringify(update));
   
   var ret = errMsg;
   
@@ -30,11 +28,11 @@ function orderParsing(update) {
   var match = str.match(orderRegex);
   
   if ( msg.chat.type == 'private' ) {
-    ret = '🚫 Run in Group!';
+    ret = '🚫 Run In Group!';
   } else {
  
   
-    if (match.length == 8) {
+    if (match.length == 4) {
       for(var i=0; i < match.length; i++) {
         match[i] = match[i].replace(':', '').trim();
       }
@@ -42,18 +40,14 @@ function orderParsing(update) {
     
       ret  = "📨 <b>"+match[0]+"</b>\n\n";
       ret += "📥 ORDER\n<code>" + match[1] + "</code>\n\n";
-      ret += "☑️ <b>SALES</b>\n 🔸 " + match[2] + "\n\n";
+      ret += "☑️ <b>PPoE</b>\n 🔸 " + match[2] + "\n\n";
   
-      ret += "🗃 <b>KONSUMEN</b>\n";
-      ret += " 🔹 NO HP: "+match[3] + "\n";
-      ret += " 🔹 MODEM: "+match[4] + "\n";
-      ret += " 🔹 KABEL: "+match[5] + "\n";
-      ret += " 🔹 LAIN LAIN: "+match[6] + "\n";
-      ret += " 🔹 KETERANGAN: "+match[7] + "\n";
+      ret += "🗃 <b>NOMINAL</b>\n";
+      ret += " 🔹 KETERANGAN: "+match[3] + "\n";
   
-      ret += "✅ Data berhasil disimpan!";
+      ret += "✅ Data saved successfully!";
   
-      ret = "✅ Laporan Pemasangan berhasil disimpan.";
+      ret = "✅ The (your filename) report has been successfully saved.";
     
       var simpan = match;
       
@@ -80,37 +74,46 @@ function doGet(e) {
 }
 
 function doPost(e) {
-  // Make sure to only reply to json requests
   if(e.postData.type == "application/json") {
     
-    // Parse the update sent from Telegram
-    var update = JSON.parse(e.postData.contents);// Instantiate the bot passing the update 
+    var update = JSON.parse(e.postData.contents);
   
-    // Instantiate our bot passing the update 
     var bot = new Bot(token, update);
     
-    // Building commands
     var bus = new CommandBus();
     bus.on(/\/start/i, function () {
       this.replyToSender("It works!");
     });
     bus.on(/^[\/!]ping/i, function () {
-      this.forwardToSender("<b>Bot Is Working!</b>");
+      this.forwardToSender("<b>Bots Work Properly!</b>");
     });
+    bus.on(/^[\/!]tukis/i, function () {
+        this.replyToSender("\n\/T-AREA: \nPPoE: \nNOMINAL: \nKETERANGAN: -");
+        this.forwardToSender("Please Copy");
+      });
+    bus.on(/^[\/!]gangguan/i, function () {
+        this.replyToSender("");
+      });
     bus.on(/^[\/!]pasang/i, function () {
-      this.replyToSender("\n\/P-AREA: -\ \nSALES: -\ \nKONSUMEN: -\ \nNO HP: -\ \nMODEM: -\ \nKABEL: -\ \nLAIN LAIN: -\ \nKETERANGAN: -");
-      this.forwardToSender("Copy text");
-    }
+        this.replyToSender("");
+      });
+    bus.on(/^[\/!]LOKASI/i, function () {
+        this.replyToSender("");
+      });
+    bus.on(/^[\/!]AREA/i, function () {
+          this.replyToSender("");
+      });
+      bus.on(/^[\/!]file/i, function () {
+          this.replyToSender("");
+      });
     
     bus.on(orderRegex, function () {
       var rtext = orderParsing(update); 
       this.replyToSender(rtext);
     });
    
-    // Register the command bus
     bot.register(bus);
  
-    // If the update is valid, process it
     if (update) {
       bot.process();
     }
