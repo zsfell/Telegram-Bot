@@ -87,24 +87,13 @@ function doPost(e) {
     bus.on(/^[\/!]ping/i, function () {
       this.forwardToSender("<b>Bots Work Properly!</b>");
     });
-    bus.on(/^[\/!]tukis/i, function () {
+    bus.on(/^[\/!]tukinem/i, function () {
         this.replyToSender("\n\/T-AREA: \nPPoE: \nNOMINAL: \nKETERANGAN: -");
         this.forwardToSender("Please Copy");
       });
-    bus.on(/^[\/!]gangguan/i, function () {
-        this.replyToSender("");
-      });
-    bus.on(/^[\/!]pasang/i, function () {
-        this.replyToSender("");
-      });
-    bus.on(/^[\/!]LOKASI/i, function () {
-        this.replyToSender("");
-      });
-    bus.on(/^[\/!]AREA/i, function () {
-          this.replyToSender("");
-      });
-      bus.on(/^[\/!]file/i, function () {
-          this.replyToSender("");
+    bus.on(/^[\/!]your command/i, function () {
+        this.replyToSender("this is to reply text");
+        this.forwardToSender("this just below reply text");
       });
     
     bus.on(orderRegex, function () {
